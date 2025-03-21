@@ -92,7 +92,7 @@ SELECT
 	, ps.Tariff
 	, ps.Ward
 	, SUM(ps.Tariff) OVER () AS TotalTariff
---	, SUM(ps.Tariff) OVER (PARTITION BY ps.Ward) AS WardTariff
+	, SUM(ps.Tariff) OVER (PARTITION BY ps.Ward) AS WardTariff
 --	, 100.0 * ps.Tariff / SUM(ps.Tariff) OVER () AS PctOfAllTariff
 --	, 100.0 * ps.Tariff / SUM(ps.Tariff) OVER (PARTITION BY ps.Ward) AS PctOfWardTariff
 FROM
@@ -134,9 +134,9 @@ SELECT
 	ps.PatientId
 	, ps.Tariff
 	, ROW_NUMBER() OVER (ORDER BY ps.Tariff DESC) AS PatientRowIndex
---	, RANK() OVER (	ORDER BY ps.Tariff DESC) AS PatientRank
---	, DENSE_RANK() OVER (ORDER BY ps.Tariff DESC) AS PatientDenseRank
---	, NTILE(10) OVER (ORDER BY ps.Tariff DESC) AS PatientIdDecile
+	, RANK() OVER (	ORDER BY ps.Tariff DESC) AS PatientRank
+	, DENSE_RANK() OVER (ORDER BY ps.Tariff DESC) AS PatientDenseRank
+	, ntile(4) OVER (ORDER BY ps.Tariff DESC) AS PatientIdQuartile
 FROM
 	PatientStay ps
 ORDER BY

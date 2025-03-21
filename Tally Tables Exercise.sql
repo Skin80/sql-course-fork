@@ -20,12 +20,25 @@ SELECT * FROM #PatientAdmission
  You may wish to use the SQL statements below to set the start and end dates
  */
 
-DECLARE @StartDate DATE;
-DECLARE @EndDate DATE;
-SELECT @StartDate = DATEFROMPARTS(2024, 1, 1);
-SELECT @EndDate = DATEFROMPARTS(2024, 1, 8);
+DECLARE @StartDate DATE = DATEFROMPARTS(2024, 1, 1);
+DECLARE @EndDate DATE = DATEFROMPARTS(2024, 1, 8);
+DECLARE @NumDays INT = DATEDIFF(DAY, @StartDate, @EndDate) + 1;
 
--- write your answer here
+WITH cte
+AS (SELECT
+    t.N
+    ,DATEADD(DAY,t.N-1, @StartDate) as AdmittedDate
+FROM
+    TALLY t
+WHERE t.N <=@NumDays)
+SELECT cte.AdmittedDate
+    ,ISNULL(pa.NumAdmissions,0) as NumAdmissions
+ FROM cte
+LEFT JOIN #PatientAdmission pa
+ON cte.AdmittedDate = pa.AdmittedDate
+
+
+;
 
 /*
  * Exercise: list the dates that have no patient admissions
